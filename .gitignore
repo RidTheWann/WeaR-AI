@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+.env*
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# Node.js
+node_modules/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+docker/*.log
+
+# Test & Coverage
+coverage/
+*.cover
+*.coverage
+*.egg-info/
+
+# Build
+build/
+dist/
+
+# Misc
+*.swp
+*.swo
+*.bak
+
+# Frontend
+frontend/.next/
+frontend/.env*
