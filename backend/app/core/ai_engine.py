@@ -1,6 +1,7 @@
 """
-WeaR AI Engine V2 - Enterprise Local AI
-Sistem AI hybrid dengan Advanced Knowledge Base, Fuzzy Logic, dan Context Awareness.
+WeaR AI Engine - Enterprise AI Assistant
+Sistem AI dengan Advanced Knowledge Base, Fuzzy Logic, dan Context Awareness.
+Created by RidTheWann
 """
 
 import re
@@ -29,12 +30,38 @@ class AIResponse:
 class KnowledgeBase:
     """
     Advanced Knowledge Base dengan data komprehensif.
-    Mencakup: Programming, DevOps, Architecture, Security, Data Science.
+    Total 200+ topics dari Programming, DevOps, Architecture, Security, AI/ML, dan lainnya.
     """
     
     def __init__(self):
         self.knowledge = self._load_comprehensive_knowledge()
+        # Merge dengan extended knowledge
+        self._merge_extended_knowledge()
         self.topics = list(self.knowledge.keys())
+        logger.info(f"Knowledge Base loaded: {len(self.topics)} topics")
+    
+    def _merge_extended_knowledge(self):
+        """Merge all extended knowledge modules."""
+        # Extended Knowledge Part 1
+        try:
+            from app.core.extended_knowledge import EXTENDED_KNOWLEDGE
+            self.knowledge.update(EXTENDED_KNOWLEDGE)
+        except ImportError:
+            pass
+        
+        # Extended Knowledge Part 2
+        try:
+            from app.core.extended_knowledge_2 import EXTENDED_KNOWLEDGE_2
+            self.knowledge.update(EXTENDED_KNOWLEDGE_2)
+        except ImportError:
+            pass
+        
+        # Extended Knowledge Part 3
+        try:
+            from app.core.extended_knowledge_3 import EXTENDED_KNOWLEDGE_3
+            self.knowledge.update(EXTENDED_KNOWLEDGE_3)
+        except ImportError:
+            pass
     
     def _load_comprehensive_knowledge(self) -> Dict[str, Any]:
         """
@@ -688,12 +715,117 @@ class PatternMatcher:
     
     def __init__(self):
         self.patterns = [
-            (r"(halo|hai|hello|hi|pagi|siang|malam)", "Halo! Saya WeaR AI v2 (Enterprise). Siap membantu engineering task Anda."),
-            (r"(siapa kamu|versi berapa|about)", "Saya **WeaR AI Engine v2**. Sistem AI lokal dengan knowledge base teknikal tingkat lanjut."),
-            (r"(terima kasih|thanks|makasih)", "Sama-sama! Happy coding! 🚀"),
-            (r"(keluar|exit|bye|dadah)", "Sampai jumpa! Sistem standby."),
-            (r"(bantuan|help|menu)", self._get_help_text())
+            # Greeting
+            (r"(halo|hai|hello|hi|hey|pagi|siang|malam|selamat)", self._greeting()),
+            
+            # Identity - Who are you
+            (r"(siapa kamu|siapa anda|who are you|kamu siapa|apa itu wear)", self._identity()),
+            
+            # Creator - Who made you
+            (r"(siapa (yang )?(?:buat|membuat|bikin|ciptakan|develop)|who (made|created|built)|pembuat|pencipta|developer|creator)", self._creator()),
+            
+            # Name origin - Why WeaR
+            (r"(arti nama|nama wear|kenapa wear|mengapa wear|asal nama|meaning of wear|why wear|wear dari)", self._name_origin()),
+            
+            # Capabilities
+            (r"(apa yang bisa|what can you|kemampuan|bisa apa|fitur)", self._capabilities()),
+            
+            # Thanks
+            (r"(terima kasih|thanks|thank you|makasih|thx)", "Sama-sama! Senang bisa membantu. Happy coding! 🚀"),
+            
+            # Exit
+            (r"(keluar|exit|bye|dadah|goodbye|sampai jumpa)", "Sampai jumpa! WeaR AI selalu siap membantu. 👋"),
+            
+            # Help
+            (r"(bantuan|help|menu|tolong|guide)", self._get_help_text())
         ]
+    
+    def _greeting(self):
+        return """Halo! 👋 Saya **WeaR AI**, asisten AI cerdas yang siap membantu Anda.
+
+Saya dikembangkan untuk menjadi partner coding dan engineering Anda. Tanyakan apa saja tentang programming, architecture, atau teknologi!
+
+*Ketik 'help' untuk melihat semua topik yang saya kuasai.*"""
+
+    def _identity(self):
+        return """## WeaR AI
+
+Saya adalah **WeaR AI** — sebuah Artificial Intelligence Engine yang dirancang untuk membantu developer dan engineer menyelesaikan masalah teknis dengan cepat dan akurat.
+
+### Kemampuan Utama:
+- 🧠 **Knowledge Base** — 80+ topik teknikal dari programming hingga cloud
+- 🔍 **Smart Search** — Fuzzy matching untuk toleransi typo
+- 💬 **Natural Language** — Memahami pertanyaan dalam Bahasa Indonesia dan English
+- ⚡ **Instant Response** — Jawaban cepat tanpa delay
+
+### Dibuat oleh:
+**RidTheWann** — Software Engineer & AI Enthusiast
+
+*WeaR AI terus berkembang untuk menjadi asisten AI terbaik untuk developer Indonesia.*"""
+
+    def _creator(self):
+        return """## Tentang Pembuat WeaR AI
+
+WeaR AI diciptakan oleh **RidTheWann** (Ridwan), seorang Software Engineer yang passionate dalam bidang Artificial Intelligence dan Software Development.
+
+### Visi:
+Membangun AI assistant yang powerful dan accessible untuk semua developer Indonesia, tanpa perlu bergantung pada layanan berbayar eksternal.
+
+### Filosofi:
+> *"Technology should empower everyone, not just the privileged few."*
+
+WeaR AI dikembangkan dengan cinta dan dedikasi untuk komunitas developer Indonesia. 🇮🇩"""
+
+    def _name_origin(self):
+        return """## Asal Nama "WeaR"
+
+Nama **WeaR** memiliki makna khusus yang personal:
+
+```
+W  +  R  =  WeaR
+│     │
+│     └── R (Ridwan) - Sang pencipta
+│
+└────── We (Wulan) - Inspirasi dan pasangan hidup
+```
+
+### Makna:
+**WeaR** adalah singkatan dari **We** dan **aR**, yang merepresentasikan:
+- **W** → Wulan (pasangan Ridwan)
+- **R** → Ridwan (pencipta WeaR AI)
+
+Nama ini melambangkan bahwa di balik setiap inovasi teknologi, ada cinta dan dukungan dari orang-orang terdekat. WeaR AI bukan sekadar project — ini adalah simbol dedikasi dan kasih sayang. ❤️
+
+*"Behind every great code, there's a greater love."*"""
+
+    def _capabilities(self):
+        return """## Kemampuan WeaR AI
+
+### 💻 Programming Languages
+Python, JavaScript, TypeScript, Rust, Go, Java, Kotlin, Swift, C++, C#, PHP, Ruby, SQL, Bash
+
+### 🎨 Frontend Development
+React, Vue.js, Angular, Next.js, Tailwind CSS
+
+### ⚙️ Backend Development
+FastAPI, Django, Flask, Express.js, NestJS, Spring Boot, Laravel
+
+### 🗄️ Database
+PostgreSQL, MySQL, MongoDB, Redis, Elasticsearch, Cassandra
+
+### ☁️ Cloud & DevOps
+Docker, Kubernetes, AWS, GCP, Azure, Terraform, CI/CD, Linux
+
+### 🏗️ Architecture
+Microservices, Clean Architecture, SOLID, Design Patterns, DDD
+
+### 🔐 Security
+JWT, OAuth2, OWASP Top 10, Encryption, Authentication
+
+### 🤖 AI & Machine Learning
+Neural Networks, Deep Learning, NLP, LLM, RAG, Vector Database
+
+*Tanyakan topik apapun dan saya akan memberikan penjelasan yang komprehensif!*"""
     
     def match(self, query: str) -> Optional[str]:
         query_lower = query.lower()
@@ -703,7 +835,7 @@ class PatternMatcher:
         return None
 
     def _get_help_text(self):
-        return """## 🧠 WeaR AI v2 - Knowledge Base (80+ Topics)
+        return """## 🧠 WeaR AI - Knowledge Base (80+ Topics)
 
 **1. Languages:** Python, JavaScript, TypeScript, Rust, Go, Java, Kotlin, Swift, C++, C#, PHP, Ruby, SQL, Bash
 
@@ -740,7 +872,7 @@ class WeaRAIEngine:
         self.pattern_matcher = PatternMatcher()
         self.history = []
         self.max_history = 5
-        logger.info("WeaR AI Engine v2 initialized successfully.")
+        logger.info("WeaR AI Engine  initialized successfully.")
     
     def generate(self, query: str) -> AIResponse:
         start_time = datetime.now()
@@ -835,7 +967,7 @@ def ask(question: str) -> str:
 
 # --- Main Execution Block (Untuk Testing) ---
 if __name__ == "__main__":
-    print("--- WeaR AI v2 Initializing ---")
+    print("--- WeaR AI Initializing ---")
     engine = get_engine()
     
     # Test cases
