@@ -1,0 +1,1 @@
+"""WeaR Ai - API Module"""
