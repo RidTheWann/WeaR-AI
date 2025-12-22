@@ -142,5 +142,42 @@ async def list_models():
     return {
         "current_provider": settings.llm_provider,
         "current_model": getattr(settings, f"{settings.llm_provider}_model", "unknown"),
-        "available_providers": ["ollama", "groq", "together", "openai", "vllm"],
+        "available_providers": ["ollama", "groq", "together", "openai", "vllm", "local"],
     }
+
+
+@router.post("/chat/local")
+async def chat_local(request: ChatRequest):
+    """
+    Chat menggunakan AI Engine lokal tanpa pihak ketiga.
+    
+    AI ini menggunakan knowledge base built-in dan pattern matching.
+    Tidak memerlukan koneksi internet atau API key.
+    """
+    from app.core.ai_engine import get_engine
+    
+    engine = get_engine()
+    response = engine.generate(request.message)
+    
+    return {
+        "response": response.answer,
+        "confidence": response.confidence,
+        "source": response.source,
+        "engine": "WeaR AI Engine (Local)"
+    }
+
+
+@router.get("/knowledge")
+async def list_knowledge():
+    """List semua topik yang tersedia di knowledge base."""
+    from app.core.ai_engine import get_engine
+    
+    engine = get_engine()
+    topics = list(engine.knowledge_base.knowledge.keys())
+    
+    return {
+        "total_topics": len(topics),
+        "topics": topics,
+        "message": "Tanyakan tentang topik-topik ini untuk mendapatkan penjelasan lengkap!"
+    }
+

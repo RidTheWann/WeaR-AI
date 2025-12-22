@@ -80,8 +80,28 @@ Langsung ketik pertanyaan Anda di chat interface. AI akan menjawab dengan:
 |----------|-----------|
 | **Frontend** | Next.js 15, React 19, Tailwind CSS |
 | **Backend** | Python, FastAPI, LangGraph |
-| **AI Engine** | Ollama (Llama, Qwen, dll) |
-| **Memory** | Qdrant Vector Database |
+| **AI Engine** | WeaR AI Engine (Local) + Ollama (Optional) |
+| **Knowledge** | Built-in Knowledge Base |
+
+### 🧠 AI Engine Lokal
+
+WeaR AI memiliki AI Engine built-in yang berjalan **100% lokal** tanpa pihak ketiga:
+
+```bash
+# Test AI Engine via API
+curl -X POST http://localhost:8000/api/v1/chat/local \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Jelaskan apa itu recursion"}'
+
+# Lihat semua topik yang tersedia
+curl http://localhost:8000/api/v1/knowledge
+```
+
+**Topik yang tersedia:**
+- Python, JavaScript, API, Database
+- Git, Docker, FastAPI, React, Next.js
+- Sorting, Async/Await, OOP, Recursion
+- Dan terus bertambah!
 
 ## 📁 Struktur Project
 
