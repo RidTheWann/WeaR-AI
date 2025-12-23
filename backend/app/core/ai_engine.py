@@ -41,27 +41,37 @@ class KnowledgeBase:
         logger.info(f"Knowledge Base loaded: {len(self.topics)} topics")
     
     def _merge_extended_knowledge(self):
-        """Merge all extended knowledge modules."""
-        # Extended Knowledge Part 1
-        try:
-            from app.core.extended_knowledge import EXTENDED_KNOWLEDGE
-            self.knowledge.update(EXTENDED_KNOWLEDGE)
-        except ImportError:
-            pass
+        """Merge all extended knowledge modules for ULTRA POWERFUL AI."""
+        knowledge_modules = [
+            # Core Tech Knowledge
+            ("app.core.extended_knowledge", "EXTENDED_KNOWLEDGE"),
+            ("app.core.extended_knowledge_2", "EXTENDED_KNOWLEDGE_2"),
+            ("app.core.extended_knowledge_3", "EXTENDED_KNOWLEDGE_3"),
+            # Fun & Culture
+            ("app.core.knowledge_fun", "KNOWLEDGE_FUN"),
+            # Science & Space
+            ("app.core.knowledge_science", "KNOWLEDGE_SCIENCE"),
+            # World & History  
+            ("app.core.knowledge_world", "KNOWLEDGE_WORLD"),
+            # Business & Psychology
+            ("app.core.knowledge_business", "KNOWLEDGE_BUSINESS"),
+            # Lifestyle & Entertainment
+            ("app.core.knowledge_lifestyle", "KNOWLEDGE_LIFESTYLE"),
+            # Tips, Quotes, Facts, Jokes
+            ("app.core.knowledge_extra", "KNOWLEDGE_EXTRA"),
+            # Multi-language Phrases
+            ("app.core.knowledge_languages", "KNOWLEDGE_LANGUAGES"),
+            # Animals & Nature
+            ("app.core.knowledge_nature", "KNOWLEDGE_NATURE"),
+        ]
         
-        # Extended Knowledge Part 2
-        try:
-            from app.core.extended_knowledge_2 import EXTENDED_KNOWLEDGE_2
-            self.knowledge.update(EXTENDED_KNOWLEDGE_2)
-        except ImportError:
-            pass
-        
-        # Extended Knowledge Part 3
-        try:
-            from app.core.extended_knowledge_3 import EXTENDED_KNOWLEDGE_3
-            self.knowledge.update(EXTENDED_KNOWLEDGE_3)
-        except ImportError:
-            pass
+        for module_name, var_name in knowledge_modules:
+            try:
+                module = __import__(module_name, fromlist=[var_name])
+                knowledge_dict = getattr(module, var_name)
+                self.knowledge.update(knowledge_dict)
+            except (ImportError, AttributeError):
+                pass
     
     def _load_comprehensive_knowledge(self) -> Dict[str, Any]:
         """
@@ -835,31 +845,48 @@ Neural Networks, Deep Learning, NLP, LLM, RAG, Vector Database
         return None
 
     def _get_help_text(self):
-        return """## 🧠 WeaR AI - Knowledge Base (80+ Topics)
+        return """## 🧠 WeaR AI - ULTRA Knowledge Base (765+ Topics!)
 
-**1. Languages:** Python, JavaScript, TypeScript, Rust, Go, Java, Kotlin, Swift, C++, C#, PHP, Ruby, SQL, Bash
+### 💻 PROGRAMMING
+- **Languages:** Python, JavaScript, TypeScript, Rust, Go, Java, Kotlin, Swift, C++, C#, PHP, Ruby, Scala, Haskell, Elixir, dan lainnya
+- **Frameworks:** React, Vue, Angular, Next.js, FastAPI, Django, Flask, Express, Spring, Laravel
+- **Database:** PostgreSQL, MySQL, MongoDB, Redis, Elasticsearch, Cassandra
+- **DevOps:** Docker, Kubernetes, AWS, GCP, Azure, Terraform, CI/CD, Linux
 
-**2. Frontend:** React, Vue, Angular, Next.js
+### 🏗️ ARCHITECTURE & SECURITY
+- Microservices, Clean Architecture, SOLID, Design Patterns, DDD
+- JWT, OAuth2, OWASP, Cryptography, Pentesting
 
-**3. Backend:** FastAPI, Django, Flask, Express, NestJS, Spring, Laravel
+### 🤖 AI & MACHINE LEARNING
+- Neural Networks, Transformers, BERT, GPT, CNN, RNN, LSTM
+- NLP, Computer Vision, RAG, Vector Database, MLOps
 
-**4. Database:** PostgreSQL, MySQL, MongoDB, Redis, Elasticsearch, Cassandra, SQLite
+### 🎮 MEMES & INTERNET CULTURE
+- Rickroll, Doge, Pepe, Wojak, Stonks, Drake Meme
+- Gaming slang: GG, Noob, Meta, Speedrun
+- Internet slang: Based, Sus, Ratio, Touch Grass
 
-**5. Cloud & DevOps:** Docker, Kubernetes, AWS, GCP, Azure, Terraform, Ansible, NGINX, Git, Linux, CI/CD
+### 🔬 SCIENCE
+- Space: Black Holes, Big Bang, Mars, NASA, SpaceX
+- Physics: Quantum Mechanics, Relativity, Thermodynamics
+- Biology: DNA, Evolution, Immune System, Viruses
 
-**6. Architecture:** Microservices, Monolith, Clean Architecture, SOLID, Design Patterns, DDD, Event-Driven
+### 🌍 WORLD & HISTORY
+- Sejarah: World Wars, Renaissance, Ancient Civilizations
+- Indonesia: Pancasila, Batik, Rendang, Borobudur
+- Geography: Countries, Landmarks, Wonders
 
-**7. Security:** JWT, OAuth2, OWASP Top 10, SQL Injection, XSS, HTTPS/SSL/TLS, Hashing
+### 💼 BUSINESS & PSYCHOLOGY
+- Startup: MVP, Unicorn, Venture Capital, IPO
+- Finance: Investing, Crypto, Budgeting
+- Psychology: Cognitive Bias, Flow State, Growth Mindset
 
-**8. Data Structures:** Array, Linked List, Stack, Queue, Hash Table, Tree, Graph
+### 🎵 ENTERTAINMENT & LIFESTYLE
+- Music: K-pop, Hip-hop, Classical, EDM
+- Film: Hollywood, Marvel, Anime, K-Drama
+- Health: Nutrition, Exercise, Mental Health
 
-**9. Algorithms:** Sorting, Searching, Recursion, Dynamic Programming, Big O
-
-**10. AI/ML:** Machine Learning, Deep Learning, Neural Networks, NLP, LLM, RAG, Vector Database
-
-**11. Testing:** Unit Testing, Integration Testing, E2E Testing, TDD
-
-*Ketik nama topik untuk mendapatkan penjelasan lengkap!*"""
+*Ketik topik APAPUN dan saya akan menjelaskan dengan komprehensif!*"""
 
 class WeaRAIEngine:
     """
