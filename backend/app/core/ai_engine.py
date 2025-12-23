@@ -41,9 +41,9 @@ class KnowledgeBase:
         logger.info(f"Knowledge Base loaded: {len(self.topics)} topics")
     
     def _merge_extended_knowledge(self):
-        """Merge all extended knowledge modules for ULTRA POWERFUL AI."""
+        """Merge all extended knowledge modules for ULTRA POWERFUL AI - NEW ERA."""
         knowledge_modules = [
-            # Core Tech Knowledge
+            # Core Tech Knowledge (3 files)
             ("app.core.extended_knowledge", "EXTENDED_KNOWLEDGE"),
             ("app.core.extended_knowledge_2", "EXTENDED_KNOWLEDGE_2"),
             ("app.core.extended_knowledge_3", "EXTENDED_KNOWLEDGE_3"),
@@ -63,6 +63,42 @@ class KnowledgeBase:
             ("app.core.knowledge_languages", "KNOWLEDGE_LANGUAGES"),
             # Animals & Nature
             ("app.core.knowledge_nature", "KNOWLEDGE_NATURE"),
+            # Mathematics & Logic
+            ("app.core.knowledge_math", "KNOWLEDGE_MATH"),
+            # Art, Design & Creative
+            ("app.core.knowledge_creative", "KNOWLEDGE_CREATIVE"),
+            # Famous People & Figures
+            ("app.core.knowledge_people", "KNOWLEDGE_PEOPLE"),
+            # Computers & Hardware
+            ("app.core.knowledge_computers", "KNOWLEDGE_COMPUTERS"),
+            # Security & Hacking
+            ("app.core.knowledge_security", "KNOWLEDGE_SECURITY"),
+            # Religion & Spirituality
+            ("app.core.knowledge_religion", "KNOWLEDGE_RELIGION"),
+            # Cars, Bikes & Transportation
+            ("app.core.knowledge_transport", "KNOWLEDGE_TRANSPORT"),
+            # Food, Cooking & Culinary
+            ("app.core.knowledge_culinary", "KNOWLEDGE_CULINARY"),
+            # Space & Astronomy
+            ("app.core.knowledge_space", "KNOWLEDGE_SPACE"),
+            # Movies, TV & Entertainment
+            ("app.core.knowledge_entertainment", "KNOWLEDGE_ENTERTAINMENT"),
+            # Video Games & Esports
+            ("app.core.knowledge_gaming", "KNOWLEDGE_GAMING"),
+            # Relationships & Social Skills
+            ("app.core.knowledge_relationships", "KNOWLEDGE_RELATIONSHIPS"),
+            # Career, Jobs & Interviews
+            ("app.core.knowledge_career", "KNOWLEDGE_CAREER"),
+            # Economy, Finance & Crypto
+            ("app.core.knowledge_economy", "KNOWLEDGE_ECONOMY"),
+            # Education, Learning & Study Tips  
+            ("app.core.knowledge_education", "KNOWLEDGE_EDUCATION"),
+            # Medical, Health & First Aid
+            ("app.core.knowledge_medical", "KNOWLEDGE_MEDICAL"),
+            # Psychology, Mindset & Wellness
+            ("app.core.knowledge_psychology", "KNOWLEDGE_PSYCHOLOGY"),
+            # Fashion, Style & Clothing
+            ("app.core.knowledge_fashion", "KNOWLEDGE_FASHION"),
         ]
         
         for module_name, var_name in knowledge_modules:
@@ -890,8 +926,8 @@ Neural Networks, Deep Learning, NLP, LLM, RAG, Vector Database
 
 class WeaRAIEngine:
     """
-    Engine Utama.
-    Orchestrator untuk NLU (Natural Language Understanding) sederhana.
+    Engine Utama dengan ML Integration.
+    Orchestrator untuk NLU (Natural Language Understanding) dengan Neural Network.
     """
     
     def __init__(self):
@@ -899,30 +935,117 @@ class WeaRAIEngine:
         self.pattern_matcher = PatternMatcher()
         self.history = []
         self.max_history = 5
+        
+        # ML Components (lazy loading untuk performance)
+        self._intent_classifier = None
+        self._sentiment_analyzer = None
+        self._smart_classifier = None
+        
         logger.info("WeaR AI Engine  initialized successfully.")
+    
+    @property
+    def intent_classifier(self):
+        """Lazy load intent classifier."""
+        if self._intent_classifier is None:
+            try:
+                from app.core.ml_engine import get_intent_classifier
+                self._intent_classifier = get_intent_classifier()
+            except ImportError:
+                pass
+        return self._intent_classifier
+    
+    @property
+    def sentiment_analyzer(self):
+        """Lazy load sentiment analyzer."""
+        if self._sentiment_analyzer is None:
+            try:
+                from app.core.ml_engine import get_sentiment_analyzer
+                self._sentiment_analyzer = get_sentiment_analyzer()
+            except ImportError:
+                pass
+        return self._sentiment_analyzer
+    
+    @property
+    def smart_classifier(self):
+        """Lazy load smart query classifier."""
+        if self._smart_classifier is None:
+            try:
+                from app.core.neural_network import get_smart_classifier
+                self._smart_classifier = get_smart_classifier()
+            except ImportError:
+                pass
+        return self._smart_classifier
+    
+    def analyze_intent(self, query: str) -> dict:
+        """Analyze user intent using ML."""
+        result = {"intent": "unknown", "confidence": 0.0}
+        
+        if self.intent_classifier:
+            intent, conf = self.intent_classifier.classify(query)
+            result = {"intent": intent, "confidence": conf}
+        
+        return result
+    
+    def analyze_sentiment(self, text: str) -> dict:
+        """Analyze text sentiment."""
+        if self.sentiment_analyzer:
+            return self.sentiment_analyzer.analyze(text)
+        return {"sentiment": "neutral", "score": 0.0}
+    
+    def classify_query(self, query: str) -> dict:
+        """Classify query using neural network."""
+        result = {"category": "general", "confidence": 0.0}
+        
+        if self.smart_classifier:
+            category, conf = self.smart_classifier.classify(query)
+            result = {"category": category, "confidence": conf}
+        
+        return result
     
     def generate(self, query: str) -> AIResponse:
         start_time = datetime.now()
         query = query.strip()
         
+        # ML Analysis (background - adds to metadata)
+        ml_analysis = {}
+        if self.smart_classifier:
+            ml_analysis["query_category"] = self.classify_query(query)
+        if self.intent_classifier:
+            ml_analysis["intent"] = self.analyze_intent(query)
+        
         # 1. Pattern Matching (Conversational)
         pattern_resp = self.pattern_matcher.match(query)
         if pattern_resp:
-            return self._build_response(pattern_resp, 0.95, "pattern")
+            resp = self._build_response(pattern_resp, 0.95, "pattern")
+            resp.metadata["ml_analysis"] = ml_analysis
+            return resp
         
         # 2. Knowledge Base Search (Fuzzy & Direct)
         knowledge = self.knowledge_base.search(query)
         if knowledge:
             formatted_answer = self._format_technical_response(knowledge)
             conf = 0.85 if not knowledge.get("is_fuzzy") else 0.75
-            return self._build_response(formatted_answer, conf, "knowledge_base")
+            resp = self._build_response(formatted_answer, conf, "knowledge_base")
+            resp.metadata["ml_analysis"] = ml_analysis
+            return resp
             
         # 3. Fallback
         return self._build_response(self._generate_fallback(query), 0.2, "fallback")
 
     def _format_technical_response(self, data: dict) -> str:
-        """Formatter profesional dengan Markdown."""
-        parts = [f"## 📚 {data['topic'].title()}"]
+        """Formatter profesional dengan Markdown dan Natural Language."""
+        # Get natural language enhancer
+        try:
+            from app.core.natural_language import get_response_enhancer, get_smart_generator
+            enhancer = get_response_enhancer()
+            generator = get_smart_generator()
+            opener = enhancer.responder.get_opener("explain")
+            closer = enhancer.responder.get_closer()
+        except ImportError:
+            opener = "Baik! Mari saya jelaskan."
+            closer = "Semoga membantu!"
+        
+        parts = [opener, f"\n## 📚 {data['topic'].title()}"]
         
         if "category" in data:
             parts.append(f"*{data['category']}*")
@@ -951,6 +1074,9 @@ class WeaRAIEngine:
                 else:
                     parts.append(f"{value}")
             parts.append("")
+        
+        # Add friendly closer
+        parts.append(f"\n{closer}")
             
         return "\n".join(parts)
 

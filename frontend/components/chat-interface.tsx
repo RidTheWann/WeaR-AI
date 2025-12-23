@@ -55,51 +55,25 @@ export default function ChatInterface() {
         ]);
 
         try {
-            // Call the API with streaming
-            const response = await fetch("/api/v1/chat", {
+            // Call the local AI API (non-streaming)
+            const response = await fetch("http://localhost:8000/api/v1/chat/local", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: input.trim(), stream: true }),
+                body: JSON.stringify({ message: input.trim() }),
             });
 
             if (!response.ok) throw new Error("Failed to get response");
 
-            const reader = response.body?.getReader();
-            const decoder = new TextDecoder();
-            let fullContent = "";
+            const data = await response.json();
 
-            if (reader) {
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split("\n\n");
-
-                    for (const line of lines) {
-                        if (line.startsWith("event:")) {
-                            const eventMatch = line.match(/event: (\w+)/);
-                            const dataMatch = line.match(/data: (.+)/);
-
-                            if (eventMatch && dataMatch) {
-                                const event = eventMatch[1];
-                                const data = dataMatch[1];
-
-                                if (event === "token") {
-                                    fullContent += data;
-                                    setMessages((prev) =>
-                                        prev.map((m) =>
-                                            m.id === thinkingId
-                                                ? { ...m, content: fullContent, thinking: false }
-                                                : m
-                                        )
-                                    );
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            // Update the message with the response
+            setMessages((prev) =>
+                prev.map((m) =>
+                    m.id === thinkingId
+                        ? { ...m, content: data.response || "No response received", thinking: false }
+                        : m
+                )
+            );
         } catch (error) {
             console.error("Chat error:", error);
             setMessages((prev) =>
@@ -107,7 +81,7 @@ export default function ChatInterface() {
                     m.id === thinkingId
                         ? {
                             ...m,
-                            content: "Sorry, I encountered an error. Please try again.",
+                            content: "Maaf, terjadi error. Pastikan backend berjalan di http://localhost:8000",
                             thinking: false,
                         }
                         : m
